@@ -18,8 +18,8 @@ local tyrannical = require("tyrannical")
 local drwaer = require("drawer")
 
 -- App Menu
-local customMenu   = require( "customMenu")
-app_menu = customMenu.appmenu (
+local appmenu   = require( "appMenu")
+app_menu = appmenu (
             { -- Main menu
                 filter      = true,
                 show_filter = true,
