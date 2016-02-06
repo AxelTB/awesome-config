@@ -140,7 +140,8 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 mytextclock = awful.widget.textclock()
 
 -- Create a wibox for each screen and add it
-mywibox = {}
+topWibox = {}
+bottomWibox = {}
 mypromptbox = {}
 mylayoutbox = {}
 mytaglist = {}
@@ -204,28 +205,50 @@ for s = 1, screen.count() do
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
-    -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s })
+    -- Create the top wibox top
+    topWibox[s] = awful.wibox({ position = "top", screen = s })
 
     -- Widgets that are aligned to the left
-    local left_layout = wibox.layout.fixed.horizontal()
-    left_layout:add(mylauncher)
-    left_layout:add(mytaglist[s])
-    left_layout:add(mypromptbox[s])
+    local top_left_layout = wibox.layout.fixed.horizontal()
+    --top_left_layout:add(mylauncher)
+    top_left_layout:add(mytaglist[s])
+    top_left_layout:add(mypromptbox[s])
 
     -- Widgets that are aligned to the right
-    local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
-    right_layout:add(mytextclock)
-    right_layout:add(mylayoutbox[s])
+    local top_right_layout = wibox.layout.fixed.horizontal()
+    top_right_layout:add(mytextclock)
 
     -- Now bring it all together (with the tasklist in the middle)
-    local layout = wibox.layout.align.horizontal()
-    layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
-    layout:set_right(right_layout)
+    local top_layout = wibox.layout.align.horizontal()
+    top_layout:set_left(top_left_layout)
+    --layout:set_middle(mytasklist[s])
+    top_layout:set_right(top_right_layout)
 
-    mywibox[s]:set_widget(layout)
+    topWibox[s]:set_widget(top_layout)
+    
+    -- Create the bottom wibox top
+    bottomWibox[s] = awful.wibox({ position = "bottom", screen = s })
+
+    -- Widgets that are aligned to the left
+
+    -- Widgets that are aligned to the right
+    local bottom_right_layout = wibox.layout.fixed.horizontal()
+    if s == 1 then bottom_right_layout:add(wibox.widget.systray()) end
+    bottom_right_layout:add(mylayoutbox[s])
+
+    -- Now bring it all together (with the tasklist in the middle)
+    local bottom_layout = wibox.layout.align.horizontal()
+    
+    local mytextbox = wibox.widget.textbox()
+    mytextbox:set_menu(app_menu,1) -- 3 = right mouse button, 1 = left mouse button
+    mytextbox:set_text("App")
+    bottom_layout:set_left(mytextbox)
+    bottom_layout:set_middle(mytasklist[s])
+    bottom_layout:set_right(bottom_right_layout)
+
+    bottomWibox[s]:set_widget(bottom_layout)
+    
+    
 end
 -- }}}
 
