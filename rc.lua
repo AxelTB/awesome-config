@@ -15,7 +15,7 @@ local menubar = require("menubar")
 -- Other libraries
 local radical = require("radical")
 local tyrannical = require("tyrannical")
-local drwaer = require("drawer")
+--local drawer = require("drawer")
 
 -- App Menu
 local appmenu   = require( "appMenu")
@@ -33,7 +33,6 @@ app_menu = appmenu (
                 item_style  = radical.item.style.classic
             })
             
-
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -57,6 +56,24 @@ do
         in_error = false
     end)
 end
+-- }}}
+
+-- {{{ Widgets
+-- Create the clock
+--local clock                  = drawer.dateInfo          ( nil,{camUrl=myCamUrl,camTimeout=myCamTimeout}                 )
+-- clock.bg                     = beautiful.bar_bg_alternate or beautiful.bg_alternate
+
+-- Create the volume box
+local soundWidget            = require("soundWidget")
+
+-- Create the net manager
+--local netinfo                = drawer.netInfo           ( 300                                )
+
+-- Create the memory manager
+--local meminfo                = drawer.memInfo           ( 300                                )
+
+-- Create the cpu manager
+--local cpuinfo                = drawer.cpuInfo           ( 300                                )
 -- }}}
 
 -- {{{ Variable definitions
@@ -217,7 +234,7 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local top_right_layout = wibox.layout.fixed.horizontal()
     top_right_layout:add(mytextclock)
-
+    top_right_layout:add(soundWidget())
     -- Now bring it all together (with the tasklist in the middle)
     local top_layout = wibox.layout.align.horizontal()
     top_layout:set_left(top_left_layout)
