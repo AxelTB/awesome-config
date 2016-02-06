@@ -10,8 +10,8 @@ local layout = require("awful.layout")
 local client = require("awful.client")
 -- local titlebar = require("widgets.titlebar")
 -- local tabbar = require("widgets.tabbar")
-local config = require("forgotten")
-local layoutmenu = require("customMenu.layoutmenu")
+--local config = require("forgotten")
+--local layoutmenu = require("customMenu.layoutmenu")
 local util = require("awful.util")
 -- local shifty = require("shifty")
 
@@ -104,9 +104,9 @@ function string:split(sep)
 end
 
 
-function  module.invertedIconPath(tagName)
+--[[function  module.invertedIconPath(tagName)
     return config.iconPath .. (config.useListPrefix == true and "tags_invert/" or "tags/") .. tagName
-end
+end]]--
 
 function stripHtml(str)
     local safeStr = ""
