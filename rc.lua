@@ -3,7 +3,6 @@
 local gears = require("gears")
 local awful = require("awful")
 awful.rules = require("awful.rules")
-local tyrannical = require("tyrannical")
 require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
@@ -12,6 +11,11 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+
+-- Other libraries
+local radical = require("radical")
+local tyrannical = require("tyrannical")
+local drwaer = require("drawer")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
