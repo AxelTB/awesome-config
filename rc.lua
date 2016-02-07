@@ -12,13 +12,15 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 
 -- Other libraries
+-- Tag
 local radical = require("radical")
 local tyrannical = require("tyrannical")
 require( "tyrannical.shortcut" )
 require("repetitive")
---local drawer = require("drawer")
 local shorter = require( "shorter" )
 
+-- Widgets
+local batteryWidget = require("batteryWidget")
 -- App Menu
 local appmenu   = require( "appMenu")
 app_menu = appmenu (
@@ -248,7 +250,11 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local bottom_right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then bottom_right_layout:add(wibox.widget.systray()) end
+    -- On first Screen show battery and system tray
+    if s == 1 then
+    bottom_right_layout:add(batteryWidget())
+    bottom_right_layout:add(wibox.widget.systray())
+    end
     bottom_right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
