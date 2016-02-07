@@ -13,10 +13,11 @@ local wirefu = require("wirefu")
 local GLib = lgi.require 'GLib'
 
 local capi = {timer=timer}
+local ib = nil
 
 --Save config
 local batConfig={batId=0,batTimeout=15}
-local batStatus={state,rate,fullDesign,fullReal}
+local batStatus={state="Unknown",rate,fullDesign,fullReal}
 
 local battery_state = {
     ["Full"]        = "↯", ["Unknown"]     = "?",
@@ -68,7 +69,7 @@ end
 ---     battery_id: number of the visualized battery (Default 0)
 ---     update_time:    w idget update time in seconds (Default 15)
 local function new(args)
-    local ib = wibox.widget.base.empty_widget()
+    ib = wibox.widget.base.empty_widget()
 
     --Update from dbus with wirefu
     local function updateDBusAsync()
@@ -90,8 +91,9 @@ local function new(args)
     local function timeout(wdg)
         updateDBusAsync()
         --batStatus=parseAcpi()
-        if batStatus.state == "Empty" then
+        if batStatus.state == "Empty" or batStatus.state == "Unknown" then
             --AXTODO: Signal no battery and reduce rate of update 
+            --ib= wibox.widget.base.empty_widget()
         end
         --wdg:set_value((tonumber(batStatus.rate) or 0)/100)
         --wdg:emit_signal("widget::updated")
