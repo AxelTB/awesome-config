@@ -305,7 +305,7 @@ return setmetatable(shorter,{__newindex=function(self,key,value)
             pretty[name] = sec
         end
         sec[#sec+1] = {key=key_name,desc=desc}
-        local awkey = awful.key(key[1],key[2],fct)
+        local awkey = awful.key(key[1],key[2],function(par) fct(par) end)
 
         -- Do as util.join, but avoid the N^2 complexity
         local index = #real

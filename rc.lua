@@ -232,8 +232,8 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local top_right_layout = wibox.layout.fixed.horizontal()
-    top_right_layout:add(mytextclock)
     top_right_layout:add(soundWidget())
+    top_right_layout:add(mytextclock)
     -- Now bring it all together (with the tasklist in the middle)
     local top_layout = wibox.layout.align.horizontal()
     top_layout:set_left(top_left_layout)
@@ -348,3 +348,16 @@ shorter.register_section("TYRANNICAL",{
     foo = "bar",
     bar = "foo"
 })
+
+shorter.Tag = {
+    --[[{desc = "Set the tag state",
+    key={{  modkey, "Control" }, "Tab"   }, fct = function () customButton.lockTag.show_menu()                  end},
+]]--
+   
+
+    {desc = "Switch to the previous layout",
+    key={{  modkey, "Shift"   }, "space" }, fct = function () awful.layout.inc(layouts,  -1) end},
+
+ {desc = "Switch to the next layout",
+    key={{  modkey,           }, "space" }, fct = function () awful.layout.inc(layouts,  1)      end}
+}

@@ -12,10 +12,6 @@ local util         = require( "awful.util"                 )
 local beautiful     = require("beautiful")
 
 
-shorter.Bho = {
-     {desc = "Move to next Tag",        key={{  modkey,         }, "Left"    },     fct = awful.tag.viewprev },
-     {desc = "Move to previous Tag",    key={{  modkey,         }, "Right"   },     fct = awful.tag.viewnext }
-}
 shorter.Navigation = {
     desc = "Navigate between clients",
 
@@ -100,7 +96,12 @@ local hooks = {
         mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
         return true
     end},
-    {{"Mod1"   },"Return",function(command)
+    {{"Shift" },"Return",function(command)
+        local result = awful.util.spawn('gnome-terminal -e "bash -c \"'.. command ..'; exec bash\""')
+        mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
+        return true
+    end}
+    --[[{{"Mod1"   },"Return",function(command)
         local result = awful.util.spawn(command,{intrusive=true})
         mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
         return true
@@ -109,7 +110,7 @@ local hooks = {
         local result = awful.util.spawn(command,{intrusive=true,ontop=true,floating=true})
         mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
         return true
-    end}
+    end}]]--
 }
 
 --Open clients in screen "s"
@@ -171,15 +172,6 @@ shorter.Session = {
 }
 
 shorter.Tag = {
-    --[[{desc = "Set the tag state",
-    key={{  modkey, "Control" }, "Tab"   }, fct = function () customButton.lockTag.show_menu()                  end},
-
-    {desc = "Switch to the next layout",
-    key={{  modkey,           }, "space" }, fct = function () customMenu.layoutmenu.centered_menu(layouts)      end},
-
-    {desc = "Switch to the previous layout",
-    key={{  modkey, "Shift"   }, "space" }, fct = function () customMenu.layoutmenu.centered_menu(layouts,true) end},]]--
-
     {desc = "Increate the master width",
     key={{  modkey,           }, "l"     }, fct = function () awful.tag.incmwfact( 0.05)                        end},
 
@@ -197,6 +189,8 @@ shorter.Tag = {
 
     {desc = "Remove a column",
     key={{  modkey, "Control" }, "l"     }, fct = function () awful.tag.incncol(-1)                             end},
+    {desc = "Move to next Tag",        key={{"Mod1",  "Control"      }, "Left"    },     fct = awful.tag.viewprev },
+     {desc = "Move to previous Tag",    key={{"Mod1",  "Control"      }, "Right"   },     fct = awful.tag.viewnext }
 }
 
 shorter.Hardware = {
@@ -213,21 +207,6 @@ shorter.Hardware = {
     key={{}, "XF86MonBrightnessUp" }, fct = function() util.spawn_with_shell("xbacklight -inc 10") end},
     
     
---     awful.key({ modkey,"Control" }, "p", function()
---         utils.profile.start()
---         debug.sethook(utils.profile.trace, "crl", 1)
---     end),
---     awful.key({ modkey,"Control","Shift" }, "p", function()
---         debug.sethook()
---         utils.profile.stop(_G)
---     end),
-}
-
-shorter.Selection = {
-  {desc = "Change keyboard layout",
-    key={{ modkey            }, "v" }, fct = function()
-    print(selection())
-  end},
 }
 
 -- {{{ Mouse bindings
@@ -238,26 +217,12 @@ root.buttons(awful.util.table.join(
 ))
 -- }}}
 
-
-
-
-
-clientkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "f"     , function (c) c.fullscreen = not c.fullscreen     end),
-    awful.key({ modkey, "Shift"   }, "c"     , function (c) c:kill()                            end),
-    awful.key({ modkey, "Control" }, "space" , awful.client.floating.toggle                        ),
-    awful.key({ modkey,           }, "o"     , awful.client.movetoscreen                           ),
-    awful.key({ modkey,           }, "t"     , function (c) c.ontop = not c.ontop               end),
-    awful.key({ modkey,           }, "y"     , function (c) collision.resize.display(c,true)    end),
-    awful.key({ modkey,           }, "m"     , function (c) c.minimized = true                  end)
-)
-
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
 local tagSelect = {}
 for i = 1, 10 do
-    tagSelect[#tagSelect+1] = {key={{ modkey }, "#" .. i + 9},
+    tagSelect[#tagSelect+1] = {key={{ modkey }, "#" .. i},
         desc= "Switch to tag "..i,
         fct = function ()
             local screen = mouse.screen
@@ -267,7 +232,7 @@ for i = 1, 10 do
             end
         end
     }
-    tagSelect[#tagSelect+1] = {key={{ modkey, "Control" }, "#" .. i + 9},
+    tagSelect[#tagSelect+1] = {key={{ modkey, "Control" }, "#" .. i},
         desc= "Toggle tag "..i,
         fct = function ()
             local screen = mouse.screen
@@ -277,7 +242,7 @@ for i = 1, 10 do
             end
         end
     }
-    tagSelect[#tagSelect+1] = {key={{ modkey, "Shift" }, "#" .. i + 9},
+    tagSelect[#tagSelect+1] = {key={{ modkey, "Shift" }, "#" .. i},
         desc= "Move cofussed to tag "..i,
         fct = function ()
             local tag = awful.tag.gettags(client.focus.screen)[i]
@@ -286,7 +251,7 @@ for i = 1, 10 do
             end
         end
     }
-    tagSelect[#tagSelect+1] = {key={{ modkey, "Control", "Shift" }, "#" .. i + 9},
+    tagSelect[#tagSelect+1] = {key={{ modkey, "Control", "Shift" }, "#" .. i},
         desc= "Toggle tag "..i,
         fct = function ()
             local tag = awful.tag.gettags(client.focus.screen)[i]
@@ -311,16 +276,17 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
-    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-    awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
+    --awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
+    awful.key({ modkey,           }, "Left",   function(c)   awful.client.movetoscreen(c) end   ),
+    awful.key({ modkey,           }, "Right",   function(c)   awful.client.movetoscreen(c,-1) end   ),
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
-    awful.key({ modkey,           }, "n",
+    awful.key({ modkey,           }, "m",
         function (c)
             -- The client currently has the input focus, so it cannot be
             -- minimized, since minimized clients can't have the focus.
             c.minimized = true
         end),
-    awful.key({ modkey,           }, "m",
+    awful.key({ modkey,  "Shift"  }, "m",
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
             c.maximized_vertical   = not c.maximized_vertical
@@ -338,3 +304,18 @@ awful.rules.rules = {
                      keys = clientkeys,
                      buttons = clientbuttons } }
 }
+
+
+shorter.register_section("Client",{
+    close =         "Mod4 + Shift + c" ,
+    fullScreen =    "Mod4 +f",
+    floating =      "Mod4 + Ctrl + Space",
+    toLeftScreen = "Mod4 + Left Arrow",
+    toRightScreen = "Mod4 + Right Arrow",
+    moveOnTop =     "Mod4 + t",
+    minimize =      "Mod4 + m",
+    toggleMaximize =      "Mod4 + Shift + m"
+    --master =        "Mod4 + Ctrl + Return",
+    
+    
+})
