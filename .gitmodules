@@ -4,3 +4,6 @@
 [submodule "drawer"]
 	path = drawer
 	url = https://github.com/AxelTB/drawer.git
+[submodule "wirefu"]
+	path = wirefu
+	url = https://github.com/AxelTB/wirefu.git
