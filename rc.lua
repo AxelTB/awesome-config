@@ -58,6 +58,16 @@ do
 end
 -- }}}
 
+-- Allow personal.lua file to overload some settings (If exists)
+local pers=loadfile(awful.util.getdir("config")..'/personal.lua')
+if pers ~= nil then
+    pers()
+    print("Info: personal.lua file loaded")
+else
+    print("Warn: personal.lua file not found")
+end
+
+
 -- {{{ Widgets
 -- Create the clock
 --local clock                  = drawer.dateInfo          ( nil,{camUrl=myCamUrl,camTimeout=myCamTimeout}                 )
