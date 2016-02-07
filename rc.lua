@@ -254,7 +254,7 @@ for s = 1, screen.count() do
     
 
     local mylauncher = wibox.widget.imagebox();
-   mylauncher:set_menu(app_menu,1)
+    mylauncher:set_menu(app_menu,1)
     mylauncher:set_image(beautiful.awesome_icon)
     bottom_layout:set_left(mylauncher)
     bottom_layout:set_middle(mytasklist[s])
