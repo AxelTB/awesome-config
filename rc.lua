@@ -20,7 +20,7 @@ require("repetitive")
 local shorter = require( "shorter" )
 
 -- Widgets
-local batteryWidget = require("batteryWidget")
+local customWidgets = require("customWidgets")
 -- App Menu
 local appmenu   = require( "appMenu")
 app_menu = appmenu (
@@ -78,8 +78,8 @@ end
 -- clock.bg                     = beautiful.bar_bg_alternate or beautiful.bg_alternate
 
 -- Create the volume box
-local soundWidget            = require("soundWidget")
-
+local soundWidget           = customWidgets.sound()
+local batteryWidget         = customWidgets.battery()
 -- Create the net manager
 --local netinfo                = drawer.netInfo           ( 300                                )
 
@@ -234,7 +234,7 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local top_right_layout = wibox.layout.fixed.horizontal()
-    top_right_layout:add(soundWidget())
+    top_right_layout:add(soundWidget)
     top_right_layout:add(mytextclock)
     -- Now bring it all together (with the tasklist in the middle)
     local top_layout = wibox.layout.align.horizontal()
@@ -252,7 +252,7 @@ for s = 1, screen.count() do
     local bottom_right_layout = wibox.layout.fixed.horizontal()
     -- On first Screen show battery and system tray
     if s == 1 then
-    bottom_right_layout:add(batteryWidget())
+    bottom_right_layout:add(batteryWidget)
     bottom_right_layout:add(wibox.widget.systray())
     end
     bottom_right_layout:add(mylayoutbox[s])

@@ -11,7 +11,6 @@ local widget2 = require("awful.widget")
 local beautiful = require("beautiful")
 local util = require("awful.util")
 local radical      = require( "radical"                  )
-local allinone = require("widgets.allinone")
 local capi = { screen = screen, mouse = mouse}
 
 local moduleSound = {}
