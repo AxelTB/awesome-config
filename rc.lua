@@ -252,10 +252,10 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local bottom_layout = wibox.layout.align.horizontal()
     
-    local mytextbox = awful.widget.launcher({ image = beautiful.awesome_icon,                                     menu = app_menu })
-   -- mytextbox:set_menu(app_menu,1) -- 3 = right mouse button, 1 = left mouse button
-    --mytextbox:set_image(beautiful.awesome_icon)
-    --mytextbox:set_text("App")
+
+    local mylauncher = wibox.widget.imagebox();
+   mylauncher:set_menu(app_menu,1)
+    mylauncher:set_image(beautiful.awesome_icon)
     bottom_layout:set_left(mylauncher)
     bottom_layout:set_middle(mytasklist[s])
     bottom_layout:set_right(bottom_right_layout)
