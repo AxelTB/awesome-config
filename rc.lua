@@ -143,20 +143,8 @@ end
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
-myawesomemenu = {
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", awesome.quit }
-}
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
-
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
+--mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,                                     menu = app_menu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -237,7 +225,6 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the left
     local top_left_layout = wibox.layout.fixed.horizontal()
-    --top_left_layout:add(mylauncher)
     top_left_layout:add(mytaglist[s])
     top_left_layout:add(mypromptbox[s])
 
@@ -248,7 +235,6 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local top_layout = wibox.layout.align.horizontal()
     top_layout:set_left(top_left_layout)
-    --layout:set_middle(mytasklist[s])
     top_layout:set_right(top_right_layout)
 
     topWibox[s]:set_widget(top_layout)
@@ -266,10 +252,11 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local bottom_layout = wibox.layout.align.horizontal()
     
-    local mytextbox = wibox.widget.textbox()
-    mytextbox:set_menu(app_menu,1) -- 3 = right mouse button, 1 = left mouse button
-    mytextbox:set_text("App")
-    bottom_layout:set_left(mytextbox)
+    local mytextbox = awful.widget.launcher({ image = beautiful.awesome_icon,                                     menu = app_menu })
+   -- mytextbox:set_menu(app_menu,1) -- 3 = right mouse button, 1 = left mouse button
+    --mytextbox:set_image(beautiful.awesome_icon)
+    --mytextbox:set_text("App")
+    bottom_layout:set_left(mylauncher)
     bottom_layout:set_middle(mytasklist[s])
     bottom_layout:set_right(bottom_right_layout)
 
