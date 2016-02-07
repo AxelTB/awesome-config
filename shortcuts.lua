@@ -222,7 +222,7 @@ root.buttons(awful.util.table.join(
 -- This should map on the top row of your keyboard, usually 1 to 9.
 local tagSelect = {}
 for i = 1, 10 do
-    tagSelect[#tagSelect+1] = {key={{ modkey }, "#" .. i},
+    tagSelect[#tagSelect+1] = {key={{ modkey }, "#" .. i + 9 },
         desc= "Switch to tag "..i,
         fct = function ()
             local screen = mouse.screen
@@ -232,7 +232,7 @@ for i = 1, 10 do
             end
         end
     }
-    tagSelect[#tagSelect+1] = {key={{ modkey, "Control" }, "#" .. i},
+    tagSelect[#tagSelect+1] = {key={{ modkey, "Control" }, "#" .. i + 9},
         desc= "Toggle tag "..i,
         fct = function ()
             local screen = mouse.screen
@@ -242,7 +242,7 @@ for i = 1, 10 do
             end
         end
     }
-    tagSelect[#tagSelect+1] = {key={{ modkey, "Shift" }, "#" .. i},
+    tagSelect[#tagSelect+1] = {key={{ modkey, "Shift" }, "#" .. i+ 9},
         desc= "Move cofussed to tag "..i,
         fct = function ()
             local tag = awful.tag.gettags(client.focus.screen)[i]
@@ -251,7 +251,7 @@ for i = 1, 10 do
             end
         end
     }
-    tagSelect[#tagSelect+1] = {key={{ modkey, "Control", "Shift" }, "#" .. i},
+    tagSelect[#tagSelect+1] = {key={{ modkey, "Control", "Shift" }, "#" .. i+ 9},
         desc= "Toggle tag "..i,
         fct = function ()
             local tag = awful.tag.gettags(client.focus.screen)[i]
