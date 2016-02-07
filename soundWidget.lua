@@ -161,7 +161,8 @@ local function new(mywibox3)
             button({ }, 1, function(geo)
                     toggle()
                 end),
-            button({ }, 3, function()  util.spawn_with_shell("pactl set-sink-mute "..pavuSinkN.." toggle")   end),
+            --button({ }, 3, function()  util.spawn_with_shell("pactl set-sink-mute "..pavuSinkN.." toggle")   end),
+            button({ }, 3, function()  util.spawn_with_shell("pavucontrol")   end),
             button({ }, 4, function()  util.spawn_with_shell("pactl set-sink-volume "..pavuSinkN.." -- +2%") end),
             button({ }, 5, function()  util.spawn_with_shell("pactl set-sink-volume "..pavuSinkN.." -- -2%") end)
         )
