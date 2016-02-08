@@ -3,7 +3,7 @@ return {
 --devices=             require( "customWidgets.devices"              ),
 --keyboardSwitcher=    require( "customWidgets.keyboardSwitcher"     ),
 --keyboard=            require( "customWidgets.keyboard"             ),
---spacer=              require( "customWidgets.spacer"               ),
+spacer=              require( "customWidgets.spacer"               ),
 --desktopIcon=         require( "customWidgets.desktopIcon"          ),
 --adialSelect=        require( "customWidgets.radialSelect"         ),
 --tooltip2=            require( "radical.tooltip"              ),
