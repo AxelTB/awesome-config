@@ -1,11 +1,6 @@
 local print = print
-local io,math = io,math
-local tostring,tonumber = tostring,tonumber
-local color     = require( "gears.color"              )
-local cairo     = require( "lgi"                      ).cairo
-local gio       = require( "lgi"                      ).Gio
 local wibox     = require( "wibox"                    )
-local beautiful = require( "beautiful"                )
+--local beautiful = require( "beautiful"                )
 local awful     = require( "awful"                    )
 
 
@@ -24,17 +19,6 @@ local batConfig={batTimeout=60}
 local batStatus={state="Unknown",rate,fullDesign,fullReal}
 local powerStatus = {source = nil}
 local t
-local battery_state = {
-    ["Full"]        = "↯", ["Unknown"]     = "?",
-    ["Charged"]     = "↯", ["Charging"]    = "⌁",
-    ["Discharging"] = "",  ["Empty"] = "x",
-    ["PCharge"] = ".", ["PDischage"] = ",",
-}
-
-local dbusState_lookup = {"Charging","Discharging","Empty","Charged","PCharge","PDischage"}
-dbusState_lookup[0]="Unknown"
-
-
 
 --Controllable methods
 
