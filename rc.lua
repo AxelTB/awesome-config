@@ -253,6 +253,7 @@ for s = 1, screen.count() do
     -- On first Screen show battery and system tray
     if s == 1 then
     bottom_right_layout:add(powerWidget)
+    bottom_right_layout:add(customWidgets.spacer({text=" "}))
     bottom_right_layout:add(wibox.widget.systray())
     end
     bottom_right_layout:add(mylayoutbox[s])
