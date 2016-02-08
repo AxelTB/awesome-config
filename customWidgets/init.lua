@@ -8,7 +8,7 @@ return {
 --adialSelect=        require( "customWidgets.radialSelect"         ),
 --tooltip2=            require( "radical.tooltip"              ),
 --allinone=            require( "customWidgets.allinone"             ),
-battery=             require( "customWidgets.battery"              ),
+power=             require( "customWidgets.power"              ),
 --titlebar=            require( "customWidgets.titlebar"             ),
 sound=             require( "customWidgets.sound"              ),
 }
