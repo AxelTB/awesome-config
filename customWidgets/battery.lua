@@ -6,6 +6,7 @@ local cairo     = require( "lgi"                      ).cairo
 local gio       = require( "lgi"                      ).Gio
 local wibox     = require( "wibox"                    )
 local beautiful = require( "beautiful"                )
+local awful     = require( "awful"                    )
 
 
 local lgi  = require     'lgi'
@@ -13,10 +14,13 @@ local wirefu = require("wirefu")
 local GLib = lgi.require 'GLib'
 
 local capi = {timer=timer}
-local ib = nil
+local ib = {widget = nil,battName = nil}
+
+local percentageWidget = nil
+local imageWidget = nil
 
 --Save config
-local batConfig={batId=0,batTimeout=15}
+local batConfig={batId=0,batTimeout=60}
 local batStatus={state="Unknown",rate,fullDesign,fullReal}
 
 local battery_state = {
@@ -29,38 +33,19 @@ local battery_state = {
 local dbusState_lookup = {"Charging","Discharging","Empty","Charged","PCharge","PDischage"}
 dbusState_lookup[0]="Unknown"
 
-local function set_value(self,value)
-    self._value = value
-    self:emit_signal("widget::updated")
-end
-
-local function fit(self,width,height)
-    return width > (height * 1.5) and (height * 1.5) or width,height
-end
-
-local function draw(self,w,cr,width,height)
-    cr:save()
-    cr:set_source(color(beautiful.icon_grad or beautiful.fg_normal))
-    cr:paint()
-    local ratio = height / 10
-    cr:set_source(color(beautiful.bg_alternate or beautiful.bg_normal))
-    cr:rectangle(ratio,2*ratio,width-4*ratio,height-4*ratio)
-    cr:stroke()
-    cr:rectangle(width-3*ratio,height/3,1.5*ratio,height/3)
-    cr:fill()
-    cr:rectangle(2*ratio,3*ratio,(width-6*ratio)*(self._value or 0),height-6*ratio)
-    cr:fill()
-    self._tooltip.text = ((self._value or 0)*100)..'%'
-    cr:set_source_rgba(1,0,0,1)
-    cr:set_font_size(15)
-    local extents = cr:text_extents(battery_state[batStatus.state or "Unknown"] or '*')
-    cr:move_to(ratio+(width-4*ratio)/2-extents.width/2,height/2+extents.height)
-    cr:show_text(battery_state[batStatus.state or "Unknown"] or '*')
-    cr:restore()
-end
 
 
+--[[Controllable methods
+ib.hide=function()
+    ib.widget = wibox.layout.fixed.horizontal()
+end]]--
 
+    ib.updateBatteryStatus=function()
+    ib.battName.Percentage : get(function(per) print("PERCENTAGE",per) end)
+        if ib.battName ~= nil then
+            ib.battName.Percentage : get(function(per) percentageWidget:set_text(per.." %") end)
+        end
+    end  
 
 
 
@@ -69,8 +54,40 @@ end
 ---     battery_id: number of the visualized battery (Default 0)
 ---     update_time:    w idget update time in seconds (Default 15)
 local function new(args)
-    ib = wibox.widget.base.empty_widget()
+    ib.widget = wibox.layout.fixed.horizontal()
+    
+    
+    --Search for battery
+    wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
+            --print("NL",nameList)
+            for i = 1, #nameList do          
+                   --print("found ",nameList[i])
+                    if string.match(nameList[i],"BAT") then
+                        percentageWidget = wibox.widget.textbox()
+                        percentageWidget:set_text("Un")
 
+                        imageWidget = wibox.widget.imagebox()
+                        imageWidget:set_image(awful.util.getdir("config") .."/icons/batt.png")
+    
+                        ib.widget:add(imageWidget)
+                        ib.widget:add(percentageWidget)
+
+                        print("Battery found",nameList[i])
+                        ib.battName=wirefu.SYSTEM.org.freedesktop.UPower(nameList[i]).org.freedesktop.UPower.Device;
+                        
+                        local t = capi.timer({timeout=batConfig.batTimeout})
+                        t:connect_signal("timeout",ib.updateBatteryStatus)
+                        t:start()
+                        ib.updateBatteryStatus()
+                        end
+            end
+        end,
+        function (err)
+        print("Unknown devices",err)
+        end)
+                    
+                  
+    
     --Update from dbus with wirefu
     local function updateDBusAsync()
         wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower/devices/battery_BAT0").org.freedesktop.UPower.Device.State : get( function (work)
@@ -78,14 +95,15 @@ local function new(args)
                 if work ~= nil then
                     batStatus.state=dbusState_lookup[work]
                     print("BatState:",batStatus.state)
-                    ib:emit_signal("widget::updated")
+                    --ib.widget:emit_signal("widget::updated")
+                    
                 end
             end,function(err) print("ERR:",err) end)
         
         wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower/devices/battery_BAT0").org.freedesktop.UPower.Device.Percentage : get(function (percentage)
                 print("Percentage:",percentage)
-                ib._value = ((tonumber(percentage) or 0)/100)
-                ib:emit_signal("widget::updated")
+                percentageWidget:set_text((tonumber(percentage) or 0)/100)
+                --ib.widget:emit_signal("widget::updated")
             end,function(err) print("ERR:",err) end)
     end
     local function timeout(wdg)
@@ -105,18 +123,13 @@ local function new(args)
         batConfig.batTimeout = args.update_time or batConfig.batTimeout
     end
 
-
-
-
-    ib.set_value = set_value
-    ib.fit=fit
-    ib.draw = draw
-    ib:set_tooltip("100%")
-    local t = capi.timer({timeout=batConfig.batTimeout})
-    t:connect_signal("timeout",function() timeout(ib) end)
-    t:start()
-    timeout(ib)
-    return ib
+    
+    --
+    --timeout(ib)
+    
+    return ib.widget
+    
+    --return ib
 end
 
 return setmetatable({}, { __call = function(_, ...) return new(...) end })
