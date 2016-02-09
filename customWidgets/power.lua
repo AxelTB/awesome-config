@@ -1,7 +1,7 @@
 local print = print
-local wibox     = require( "wibox"                    )
---local beautiful = require( "beautiful"                )
-local awful     = require( "awful"                    )
+local wibox     = require( "wibox" )
+--local beautiful = require( "beautiful" )
+local awful     = require( "awful" )
 
 
 local lgi  = require     'lgi'
@@ -15,7 +15,7 @@ local percentageWidget = nil
 local imageWidget = nil
 
 --Save config
-local batConfig={batTimeout=60}
+local batConfig={batTimeout=3}
 local batStatus={state="Unknown",rate,fullDesign,fullReal}
 local powerStatus = {source = nil}
 local t
@@ -29,24 +29,12 @@ local t
         end
     end  
 
-
-local function new(args)
-    ib.widget = wibox.layout.fixed.horizontal()
-    
-    imageWidget = wibox.widget.imagebox()
-    percentageWidget = wibox.widget.textbox()
-    
-    ib.widget:add(imageWidget)
-    ib.widget:add(percentageWidget)
-    
-    --
-     
-    
-    --Search for battery
-    wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
+    ib.updatePowerStatus=function()
+     wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
             --print("NL",nameList)
             
             --Search for line power
+            powerStatus.source=nil
             for i = 1, #nameList do          
                    --print("found ",nameList[i])
                     if string.match(nameList[i],"line") then
@@ -68,21 +56,34 @@ local function new(args)
                             if powerStatus.source ~= "LINE" then
                             imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_batt.png")
                             end
-                            --Set update
-                            t = capi.timer({timeout=batConfig.batTimeout})
-                            t:connect_signal("timeout",ib.updateBatteryStatus)
-                            t:start()
-                            
-                            --Force first update
+                            --update
                             ib.updateBatteryStatus()
                     end
             end
+                
         end,
         function (err)
         print("Unknown devices",err)
         end)
+        end
+
+local function new(args)
+    ib.widget = wibox.layout.fixed.horizontal()
+    
+    imageWidget = wibox.widget.imagebox()
+    percentageWidget = wibox.widget.textbox()
+    
+    ib.widget:add(imageWidget)
+    ib.widget:add(percentageWidget)
+    
+    t = capi.timer({timeout=batConfig.batTimeout})
+     
+    
+    --Update Status
+    ib.updatePowerStatus()
                     
-                  
+    t:connect_signal("timeout",ib.updatePowerStatus)
+    t:start()              
     
 --[[        wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower/devices/battery_BAT0").org.freedesktop.UPower.Device.State : get( function (work)
                 
