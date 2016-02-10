@@ -351,10 +351,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 
-shorter.register_section("TYRANNICAL",{
+--[[shorter.register_section("TYRANNICAL",{
     foo = "bar",
     bar = "foo"
-})
+})]]--
 
 shorter.Tag = {
     --[[{desc = "Set the tag state",
