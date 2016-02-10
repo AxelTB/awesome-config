@@ -79,7 +79,7 @@ end
 
 -- Create the volume box
 local soundWidget           = customWidgets.sound()
---local powerWidget         = customWidgets.power()
+local powerWidget         = customWidgets.power()
 -- Create the net manager
 --local netinfo                = drawer.netInfo           ( 300                                )
 
