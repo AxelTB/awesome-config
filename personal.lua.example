@@ -1,3 +1,9 @@
 require("utils.runOnce")
 
+-- Run Once Applications
 run_once("nm-applet")
+
+--{{{ Variables
+-- Random background path
+backgroundPath = os.getenv("HOME").."/wallpapers/"
+--}}}
