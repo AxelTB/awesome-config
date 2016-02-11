@@ -169,7 +169,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 -- Create a textclock widget
-mytextclock = awful.widget.textclock()
+mytextclock = awful.widget.textclock("%H:%M")
 
 -- Create a wibox for each screen and add it
 topWibox = {}
@@ -248,6 +248,7 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local top_right_layout = wibox.layout.fixed.horizontal()
     top_right_layout:add(soundWidget)
+    top_right_layout:add(customWidgets.spacer({text=" | "}))
     top_right_layout:add(mytextclock)
     -- Now bring it all together (with the tasklist in the middle)
     local top_layout = wibox.layout.align.horizontal()
