@@ -1,4 +1,5 @@
 local awful        = require( "awful"       )
+awful.rules      = require( "awful.rules" )
 local shorter      = require( "shorter" )
 --local widgets      = require( "widgets"                    )
 local alttab       = require( "radical.impl.alttab"        )
@@ -291,6 +292,18 @@ clientkeys = awful.util.table.join(
             c.maximized_vertical   = not c.maximized_vertical
         end)
 )
+
+-- {{{ Rules
+awful.rules.rules = {
+    -- All clients will match this rule.
+    { rule = { },
+      properties = { border_width = beautiful.border_width,
+                     border_color = beautiful.border_normal,
+                     focus = awful.client.focus.filter,
+                     keys = clientkeys,
+                     buttons = clientbuttons } },
+}
+-- }}}
 
 shorter.register_section("Client",{
     close =         "Mod4 + Shift + c" ,
