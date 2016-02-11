@@ -144,13 +144,16 @@ if beautiful.wallpaper then
         gears.wallpaper.maximized(beautiful.wallpaper, s, true)
     end
 end
-
+function randomBackground()
 fd_async.directory.list(backgroundPath):connect_signal("request::completed",function(list)
 for s = 1, screen.count() do
-        gears.wallpaper.maximized(backgroundPath .. list[math.random(#list)], s, false)
+        gears.wallpaper.fit(backgroundPath .. list[math.random(#list)], s)
     end
     
     end)
+end
+
+randomBackground()
 -- }}}
 
 -- }}}
@@ -374,7 +377,9 @@ shorter.Tag = {
     --[[{desc = "Set the tag state",
     key={{  modkey, "Control" }, "Tab"   }, fct = function () customButton.lockTag.show_menu()                  end},
 ]]--
-   
+   {desc = "Change background",
+    key={{  modkey,   }, "b" }, fct = randomBackground},
+
 
     {desc = "Switch to the previous layout",
     key={{  modkey, "Shift"   }, "space" }, fct = function () awful.layout.inc(layouts,  -1) end},
