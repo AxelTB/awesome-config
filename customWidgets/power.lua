@@ -28,45 +28,47 @@ local t
 
     ib.updateBatteryStatus=function()
         if ib.battWirefuLink ~= nil then
-            ib.battWirefuLink.Percentage : get(function(per) percentageWidget:set_text(per.." %") end)
+            ib.battWirefuLink.Percentage : get(function(per)
+            if per then
+                percentageWidget:set_text(per.." %")
+            else
+                percentageWidget:set_text("")
+            end    
+                 end, function(error) io.stderr:write("ERR::Power Percentage not found - ") end)
         end
     end  
 
     ib.updatePowerStatus=function()
      wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
             --print("NL",nameList)
-            
-            --Reset power source
-            powerStatus.source=nil
-            
+
+            -- Read all devices            
             for i = 1, #nameList do
              if string.match(nameList[i],"BAT") then
-               
                             --print("Battery found",nameList[i])
-                            ib.battWirefuLink=wirefu.SYSTEM.org.freedesktop.UPower(nameList[i]).org.freedesktop.UPower.Device;
-                            ib.battName=nameList[i]
-                            --Set Widget
-                            --Change icon if no line power
-                            if powerStatus.source ~= "LINE" then
-                            imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_batt.png")
-                            powerStatus.source = "BAT"
-                            end
-                            --update
-                            ib.updateBatteryStatus()
+               ib.battWirefuLink=wirefu.SYSTEM.org.freedesktop.UPower(nameList[i]).org.freedesktop.UPower.Device;
+               ib.battName=nameList[i]
+               --update
+               ib.updateBatteryStatus()
                                                         
              elseif string.match(nameList[i],"line") then
-                        --If line found check if online
+                --If line found check if online
                        -- print("Found line",nameList[i])
-                        wirefu.SYSTEM.org.freedesktop.UPower(nameList[i]).org.freedesktop.UPower.Device.Online : get(function(connected)
+                wirefu.SYSTEM.org.freedesktop.UPower(nameList[i]).org.freedesktop.UPower.Device.Online : get(
+                    function(connected)
                         if connected then
-                            --print("Line is ",connected)
+                                --print("Line is ",connected)
                             --If online change icon and set source to line
-                            powerStatus.source="LINE"
                             imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_line.png")
+                        else
+                            imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_batt.png")
                         end
-                        end, function(error) print("ERR::Power ",err) end)
-                        
-             end
+                    end,
+                    function(error)
+                        print("ERR::Power ",err)
+                    end)
+                            
+                end
             end
                 
         end,
