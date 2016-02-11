@@ -79,7 +79,7 @@ end
 
 -- Create the volume box
 local soundWidget           = customWidgets.sound()
-local powerWidget         = customWidgets.power()
+--local powerWidget         = customWidgets.power()
 -- Create the net manager
 --local netinfo                = drawer.netInfo           ( 300                                )
 
@@ -252,7 +252,7 @@ for s = 1, screen.count() do
     local bottom_right_layout = wibox.layout.fixed.horizontal()
     -- On first Screen show battery and system tray
     if s == 1 then
-    bottom_right_layout:add(powerWidget)
+    --bottom_right_layout:add(powerWidget)
     bottom_right_layout:add(customWidgets.spacer({text=" "}))
     bottom_right_layout:add(wibox.widget.systray())
     end
@@ -307,19 +307,23 @@ client.connect_signal("manage", function (c, startup)
         end
     end
 
-    local titlebars_enabled = false
+    local titlebars_enabled = true
     if titlebars_enabled and (c.type == "normal" or c.type == "dialog") then
+        local sp=customWidgets.spacer({text = " "})
+        
         -- Widgets that are aligned to the left
         local left_layout = wibox.layout.fixed.horizontal()
+        left_layout:add(sp)
         left_layout:add(awful.titlebar.widget.iconwidget(c))
 
         -- Widgets that are aligned to the right
         local right_layout = wibox.layout.fixed.horizontal()
         right_layout:add(awful.titlebar.widget.floatingbutton(c))
+        right_layout:add(sp)
         right_layout:add(awful.titlebar.widget.maximizedbutton(c))
-        right_layout:add(awful.titlebar.widget.stickybutton(c))
-        right_layout:add(awful.titlebar.widget.ontopbutton(c))
+        right_layout:add(sp)
         right_layout:add(awful.titlebar.widget.closebutton(c))
+        right_layout:add(sp)
 
         -- The title goes in the middle
         local title = awful.titlebar.widget.titlewidget(c)
