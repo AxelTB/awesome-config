@@ -36,18 +36,9 @@ local t
      wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
             --print("NL",nameList)
             
-            --Search for line power
+            --Reset power source
             powerStatus.source=nil
-            for i = 1, #nameList do          
-                   --print("found ",nameList[i])
-                    if string.match(nameList[i],"line") then
-                        imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_line.png")
-                        percentageWidget:set_text("")
-                        powerStatus.source="LINE"
-                    end
-            end
             
-            --Search for battery
             for i = 1, #nameList do
              if string.match(nameList[i],"BAT") then
                
@@ -58,10 +49,24 @@ local t
                             --Change icon if no line power
                             if powerStatus.source ~= "LINE" then
                             imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_batt.png")
+                            powerStatus.source = "BAT"
                             end
                             --update
                             ib.updateBatteryStatus()
-                    end
+                                                        
+             elseif string.match(nameList[i],"line") then
+                        --If line found check if online
+                       -- print("Found line",nameList[i])
+                        wirefu.SYSTEM.org.freedesktop.UPower(nameList[i]).org.freedesktop.UPower.Device.Online : get(function(connected)
+                        if connected then
+                            --print("Line is ",connected)
+                            --If online change icon and set source to line
+                            powerStatus.source="LINE"
+                            imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_line.png")
+                        end
+                        end, function(error) print("ERR::Power ",err) end)
+                        
+             end
             end
                 
         end,
