@@ -11,6 +11,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
+local fd_async = require("utils.fd_async")
 -- Other libraries
 -- Tag
 local radical = require("radical")
@@ -62,6 +63,7 @@ do
 end
 -- }}}
 
+local backgroundPath = os.getenv("HOME").."/wallpapers/"
 -- Allow personal.lua file to overload some settings (If exists)
 local pers=loadfile(awful.util.getdir("config")..'/personal.lua')
 if pers ~= nil then
@@ -132,15 +134,26 @@ tyrannical.settings.mwfact = 0.66
 dofile(awful.util.getdir("config") .. "/baseRule.lua")
 
 -- Do not honor size hints request for those classes
-tyrannical.properties.size_hints_honor = { xterm = false, URxvt = false, aterm = false, sauer_client = false, mythfrontend  = false}
+--tyrannical.properties.size_hints_honor = { xterm = false, URxvt = false, aterm = false, sauer_client = false, mythfrontend  = false}
 
 
 -- {{{ Wallpaper
+
 if beautiful.wallpaper then
     for s = 1, screen.count() do
         gears.wallpaper.maximized(beautiful.wallpaper, s, true)
     end
 end
+function randomBackground()
+fd_async.directory.list(backgroundPath):connect_signal("request::completed",function(list)
+for s = 1, screen.count() do
+        gears.wallpaper.fit(backgroundPath .. list[math.random(#list)], s)
+    end
+    
+    end)
+end
+
+randomBackground()
 -- }}}
 
 -- }}}
@@ -364,7 +377,9 @@ shorter.Tag = {
     --[[{desc = "Set the tag state",
     key={{  modkey, "Control" }, "Tab"   }, fct = function () customButton.lockTag.show_menu()                  end},
 ]]--
-   
+   {desc = "Change background",
+    key={{  modkey,   }, "b" }, fct = randomBackground},
+
 
     {desc = "Switch to the previous layout",
     key={{  modkey, "Shift"   }, "space" }, fct = function () awful.layout.inc(layouts,  -1) end},

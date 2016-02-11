@@ -89,13 +89,6 @@ shorter.Screen = {
   
 ]]--
 local hooks = {
-    {desc = "Random Background",
-    key={ {      modkey,             }, "b" }, fct = function () awful.util.spawn_with_shell("Scripts/randomBackground.sh")       end },
-    {{         },"Return",function(command)
-        local result = awful.util.spawn(command)
-        mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
-        return true
-    end},
     {{"Shift" },"Return",function(command)
         local result = awful.util.spawn('gnome-terminal -e "bash -c \"'.. command ..'; exec bash\""')
         mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
