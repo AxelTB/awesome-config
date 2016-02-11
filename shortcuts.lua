@@ -85,11 +85,11 @@ shorter.Screen = {
     {desc = "Select screen 5",
     key={ {                   }, "#180" }, fct = function () collision.swap_screens(5)       end },
   
-  {desc = "Random Background",
-    key={ {      modkey,             }, "b" }, fct = function () awful.util.spawn_with_shell("$HOME/.config/awesome/Scripts/randomBackground.sh")       end },
-}
+  
 ]]--
 local hooks = {
+    {desc = "Random Background",
+    key={ {      modkey,             }, "b" }, fct = function () awful.util.spawn_with_shell("Scripts/randomBackground.sh")       end },
     {{         },"Return",function(command)
         local result = awful.util.spawn(command)
         mypromptbox[mouse.screen].widget:set_text(type(result) == "string" and result or "")
