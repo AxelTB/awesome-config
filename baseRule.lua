@@ -72,9 +72,9 @@ tyrannical.tags = {
         focus_new   = true                                           ,
         selected    = true,
         index       = 1,
-		--exec_once   = {"x-terminal-emulator"}, 
+		--exec_once   = {"x-terminal-emulator"},
         class       = {
-            "xterm" , "urxvt" , "aterm","URxvt","XTerm","Gnome-terminal"
+            "xterm" , "urxvt" , "aterm","URxvt","XTerm","Gnome-terminal","Mate-terminal"
         },
     } ,
     {
@@ -85,12 +85,12 @@ tyrannical.tags = {
 		--locked=true,
         --icon        = utils.tools.invertedIconPath("net.png")        ,
         --screen      = {config.scr.pri, config.scr.sec}               ,
-        --exec_once   = {"'/opt/google/chrome/chrome'"}, 
+        --exec_once   = {"'/opt/google/chrome/chrome'"},
         layout      = awful.layout.suit.max                          ,
 		--shortcut    = { {modkey} , "i" },
         --         clone_on    = 2,
         no_focus_stealing_in = true                                  ,
-        class = {   
+        class = {
             "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
             "Chromium"      , "nightly"        , "Nightly"   , "minefield"    , "Minefield",
             "luakit"	    , "Google-chrome"  , "Google-chrome-stable"
@@ -108,7 +108,7 @@ tyrannical.tags = {
         max_clients = fair_split_or_tile,
         rotate_shortcut = true,
         shortcut    = { {modkey} , "e" },
-        class  = { 
+        class  = {
             "Thunar"        , "Konqueror"      , "Dolphin"   , "ark"          , "Nautilus",         }
     } ,
     {
@@ -119,8 +119,8 @@ tyrannical.tags = {
         --icon        = utils.tools.invertedIconPath("bug.png")        ,
         layout      = awful.layout.suit.max,
         --exec_once   = "komodo",
-        
-        class ={ 
+
+        class ={
             "Kate"          , "KDevelop"       , "Codeblocks", "Code::Blocks" , "DDD", "kate4", "komodo edit", "pycharm","brackets","Sublime_text"             }
     } ,
     {
@@ -130,7 +130,7 @@ tyrannical.tags = {
         --                     screen      = {config.scr.pri, config.scr.sec}     ,
         --icon        = utils.tools.invertedIconPath("editor.png")     ,
         layout      = awful.layout.suit.tile.bottom                  ,
-        class = { 
+        class = {
             "KWrite"        , "GVim"           , "Emacs"     , "Code::Blocks" , "DDD", "Gedit"               }
     } ,
     {
@@ -139,7 +139,7 @@ tyrannical.tags = {
         exclusive   = true                                           ,
         --icon        = utils.tools.invertedIconPath("media.png")      ,
         layout      = awful.layout.suit.max                          ,
-        class = { 
+        class = {
             "Xine"          , "xine Panel"     , "xine*"     , "MPlayer"      , "GMPlayer",
             "XMMS", "Rhythmbox" }
     } ,
