@@ -144,6 +144,8 @@ if beautiful.wallpaper then
         gears.wallpaper.maximized(beautiful.wallpaper, s, true)
     end
 end
+
+math.randomseed( os.time() )
 function randomBackground()
 fd_async.directory.list(backgroundPath):connect_signal("request::completed",function(list)
 for s = 1, screen.count() do
