@@ -38,6 +38,7 @@ style       = radical.style.classic,
 item_style  = radical.item.style.classic
 })
 
+local newWidgets=require("newWidgets")
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -278,7 +279,7 @@ for s = 1, screen.count() do
   local bottom_right_layout = wibox.layout.fixed.horizontal()
   -- On first Screen show battery and system tray
   if s == 1 then
-    --bottom_right_layout:add(powerWidget)
+    bottom_right_layout:add(newWidgets.power())
     bottom_right_layout:add(customWidgets.spacer({text=" "}))
     bottom_right_layout:add(wibox.widget.systray())
     --bottom_right_layout:add(customWidgets.power())

@@ -33,16 +33,16 @@ local t
                 percentageWidget:set_text(per.." %")
             else
                 percentageWidget:set_text("")
-            end    
+            end
                  end, function(error) io.stderr:write("ERR::Power Percentage not found - ") end)
         end
-    end  
+    end
 
     ib.updatePowerStatus=function()
-     wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
+     --[[wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower").org.freedesktop.UPower.EnumerateDevices():get(function (nameList)
             --print("NL",nameList)
 
-            -- Read all devices            
+            -- Read all devices
             for i = 1, #nameList do
              if string.match(nameList[i],"BAT") then
                             --print("Battery found",nameList[i])
@@ -50,7 +50,7 @@ local t
                ib.battName=nameList[i]
                --update
                ib.updateBatteryStatus()
-                                                        
+
              elseif string.match(nameList[i],"line") then
                 --If line found check if online
                        -- print("Found line",nameList[i])
@@ -67,23 +67,25 @@ local t
                     function(error)
                         print("ERR::Power ",err)
                     end)
-                            
+
                 end
             end
-                
+
         end,
         function (err)
         print("Unknown devices",err)
-        end)
+      end)]]--
+      imageWidget:set_image(awful.util.getdir("config") .."/customWidgets/icons/power_line.png")
+      percentageWidget:set_text("66")
         end
 ----- Local functions
 
 local function createMenu()
     local menu = radical.context{}
     local menuText = wibox.widget.textbox()
-    
+
     menu:add_widget(menuText)
-    
+
     local battText=""
     local pipe = io.popen('upower -i `upower -e | grep BAT` | tr -d " "')
     while true do
@@ -92,45 +94,44 @@ local function createMenu()
         --print("L: ",line)
         battText=battText.."\n"..line;
     end
-    
+
     menuText:set_markup(battText)
- 
+
  return menu
 end
 local function new(args)
     ib.widget = wibox.layout.fixed.horizontal()
     ib.widget:set_menu(createMenu(),1)
     --ib.widget:set_tooltip("BHO\n<br>BHO")
-    
+
     imageWidget = wibox.widget.imagebox()
     percentageWidget = wibox.widget.textbox()
-    
+
     ib.widget:add(imageWidget)
     ib.widget:add(percentageWidget)
-    
+
     t = capi.timer({timeout=batConfig.batTimeout})
-     
-    
+
+
     --Update Status
     ib.updatePowerStatus()
-                    
+
     t:connect_signal("timeout",ib.updatePowerStatus)
-    t:start()              
-    
+    t:start()
+
 --[[        wirefu.SYSTEM.org.freedesktop.UPower("/org/freedesktop/UPower/devices/battery_BAT0").org.freedesktop.UPower.Device.State : get( function (work)
-                
+
                 if work ~= nil then
                     batStatus.state=dbusState_lookup[work]
                     print("BatState:",batStatus.state)
                     --ib.widget:emit_signal("widget::updated")
-                    
+
                 end
             end,function(err) print("ERR:",err) end)
 ]]--
-   
+
     return ib.widget
-    
+
 end
 
 return setmetatable({}, { __call = function(_, ...) return new(...) end })
-
