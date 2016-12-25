@@ -12,6 +12,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 
 local fd_async = require("utils.fd_async")
+require("utils.runOnce")
 -- Other libraries
 -- Tag
 local radical = require("radical")
@@ -19,6 +20,8 @@ local tyrannical = require("tyrannical")
 require( "tyrannical.shortcut" )
 require("repetitive")
 local shorter = require( "shorter" )
+
+local personalSettings = require('personal')
 
 -- Widgets
 local customWidgets = require("customWidgets")
@@ -67,19 +70,7 @@ end
 -- This is used later as the default terminal and editor to run.
 
 
-local backgroundPath = os.getenv("HOME").."/wallpapers/"
--- Allow personal.lua file to overload some settings (If exists)
-local personalPath=awful.util.getdir("config")..'/personal.lua'
-
-local f=io.open('peronal.lua',"r")
-if f~=nil then
-  io.close(f)
-  dofile('personal.lua')
-  print("Info: personal.lua file loaded")
-
-else
-  print("Warn: personal.lua file not found")
-end
+--local backgroundPath = os.getenv("HOME").."/wallpapers/"
 
 -- {{{ Widgets
 -- Create the clock
@@ -103,8 +94,8 @@ local soundWidget           = customWidgets.sound()
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/usr/share/awesome/themes/sky/theme.lua")
 
-terminal = terminal or "mate-terminal"
-editor = os.getenv("EDITOR") or "nano"
+terminal = personalSettings.terminal or "x-terminal-emulator"
+editor = os.getenv("EDITOR") or personalSettings.editor or 'vim'
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -112,7 +103,7 @@ editor_cmd = terminal .. " -e " .. editor
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
-modkey = "Mod4"
+modkey = personalSettings.modkey or "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
@@ -144,23 +135,24 @@ dofile(awful.util.getdir("config") .. "/baseRule.lua")
 
 
 -- {{{ Wallpaper
+for i,v in ipairs(personalSettings.runOnce) do run_once(v) end
+--[[if beautiful.wallpaper then
+for s = 1, screen.count() do
+gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+end
+end]]--
+if personalSettings.backgroundPath then
 
-if beautiful.wallpaper then
-  for s = 1, screen.count() do
-    gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+  math.randomseed( os.time() )
+  function randomBackground()
+    fd_async.directory.list(personalSettings.backgroundPath):connect_signal("request::completed",function(list)
+      for s = 1, screen.count() do
+        gears.wallpaper.fit(personalSettings.backgroundPath .. list[math.random(#list)], s)
+      end
+
+    end)
   end
 end
-
-math.randomseed( os.time() )
-function randomBackground()
-  fd_async.directory.list(backgroundPath):connect_signal("request::completed",function(list)
-    for s = 1, screen.count() do
-      gears.wallpaper.fit(backgroundPath .. list[math.random(#list)], s)
-    end
-
-  end)
-end
-
 randomBackground()
 -- }}}
 
@@ -179,11 +171,11 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Create a textclock widget
 mytextclock = awful.widget.textclock("%H:%M")
 myclock_t = awful.tooltip({
-    objects = { mytextclock },
-    timer_function = function()
-            return os.date("%A %d %B %Y\n%T")
-        end,
-    })
+  objects = { mytextclock },
+  timer_function = function()
+    return os.date("%A %d %B %Y\n%T")
+  end,
+})
 
 -- Create a wibox for each screen and add it
 topWibox = {}
