@@ -12,6 +12,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 
 local fd_async = require("utils.fd_async")
+require("utils.runOnce")
 -- Other libraries
 -- Tag
 local radical = require("radical")
@@ -134,7 +135,7 @@ dofile(awful.util.getdir("config") .. "/baseRule.lua")
 
 
 -- {{{ Wallpaper
-
+ for i,v in ipairs(personalSettings.runOnce) do run_once(v) end
 --[[if beautiful.wallpaper then
   for s = 1, screen.count() do
     gears.wallpaper.maximized(beautiful.wallpaper, s, true)
