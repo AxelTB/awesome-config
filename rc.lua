@@ -70,7 +70,7 @@ end
 -- This is used later as the default terminal and editor to run.
 
 
-local backgroundPath = os.getenv("HOME").."/wallpapers/"
+--local backgroundPath = os.getenv("HOME").."/wallpapers/"
 
 -- {{{ Widgets
 -- Create the clock
@@ -135,23 +135,24 @@ dofile(awful.util.getdir("config") .. "/baseRule.lua")
 
 
 -- {{{ Wallpaper
- for i,v in ipairs(personalSettings.runOnce) do run_once(v) end
+for i,v in ipairs(personalSettings.runOnce) do run_once(v) end
 --[[if beautiful.wallpaper then
-  for s = 1, screen.count() do
-    gears.wallpaper.maximized(beautiful.wallpaper, s, true)
-  end
-end]]--
-
-math.randomseed( os.time() )
-function randomBackground()
-  fd_async.directory.list(personalSettings.backgroundPath):connect_signal("request::completed",function(list)
-    for s = 1, screen.count() do
-      gears.wallpaper.fit(backgroundPath .. list[math.random(#list)], s)
-    end
-
-  end)
+for s = 1, screen.count() do
+gears.wallpaper.maximized(beautiful.wallpaper, s, true)
 end
+end]]--
+if personalSettings.backgroundPath then
 
+  math.randomseed( os.time() )
+  function randomBackground()
+    fd_async.directory.list(personalSettings.backgroundPath):connect_signal("request::completed",function(list)
+      for s = 1, screen.count() do
+        gears.wallpaper.fit(personalSettings.backgroundPath .. list[math.random(#list)], s)
+      end
+
+    end)
+  end
+end
 randomBackground()
 -- }}}
 
@@ -170,11 +171,11 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Create a textclock widget
 mytextclock = awful.widget.textclock("%H:%M")
 myclock_t = awful.tooltip({
-    objects = { mytextclock },
-    timer_function = function()
-            return os.date("%A %d %B %Y\n%T")
-        end,
-    })
+  objects = { mytextclock },
+  timer_function = function()
+    return os.date("%A %d %B %Y\n%T")
+  end,
+})
 
 -- Create a wibox for each screen and add it
 topWibox = {}
