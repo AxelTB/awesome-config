@@ -78,7 +78,7 @@ end
 -- clock.bg                     = beautiful.bar_bg_alternate or beautiful.bg_alternate
 
 -- Create the volume box
-local soundWidget           = customWidgets.sound()
+local soundWidget           = newWidgets.sound()
 --local powerWidget         = customWidgets.power()
 -- Create the net manager
 --local netinfo                = drawer.netInfo           ( 300                                )
