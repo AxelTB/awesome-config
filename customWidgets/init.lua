@@ -8,8 +8,7 @@ spacer=              require( "customWidgets.spacer"               ),
 --adialSelect=        require( "customWidgets.radialSelect"         ),
 --tooltip2=            require( "radical.tooltip"              ),
 --allinone=            require( "customWidgets.allinone"             ),
-power=             require( "customWidgets.power"              ),
+--power=             require( "customWidgets.power"              ),
 --titlebar=            require( "customWidgets.titlebar"             ),
-sound=             require( "customWidgets.sound"              ),
+--sound=             require( "customWidgets.sound"              ),
 }
-
