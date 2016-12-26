@@ -25,6 +25,7 @@ local personalSettings = require('personal')
 
 -- Widgets
 local customWidgets = require("customWidgets")
+local iconPath=awful.util.getdir("config")..'/icons/'
 -- App Menu
 local appmenu   = require( "appMenu")
 app_menu = appmenu (
@@ -78,7 +79,8 @@ end
 -- clock.bg                     = beautiful.bar_bg_alternate or beautiful.bg_alternate
 
 -- Create the volume box
-local soundWidget           = newWidgets.sound()
+local soundWidget   =   newWidgets.sound()
+local spacerWidget  =   newWidgets.spacer({icon=iconPath..'spacer.png'})
 --local powerWidget         = customWidgets.power()
 -- Create the net manager
 --local netinfo                = drawer.netInfo           ( 300                                )
@@ -254,7 +256,7 @@ for s = 1, screen.count() do
   -- Widgets that are aligned to the right
   local top_right_layout = wibox.layout.fixed.horizontal()
   top_right_layout:add(soundWidget)
-  top_right_layout:add(customWidgets.spacer({text=" | "}))
+  top_right_layout:add(spacerWidget)
   top_right_layout:add(mytextclock)
   -- Now bring it all together (with the tasklist in the middle)
   local top_layout = wibox.layout.align.horizontal()
@@ -272,7 +274,7 @@ for s = 1, screen.count() do
   -- On first Screen show battery and system tray
   if s == 1 then
     bottom_right_layout:add(newWidgets.power())
-    bottom_right_layout:add(customWidgets.spacer({text=" "}))
+    bottom_right_layout:add(spacerWidget)
     bottom_right_layout:add(wibox.widget.systray())
     --bottom_right_layout:add(customWidgets.power())
   end

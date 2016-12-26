@@ -90,7 +90,6 @@ local function new(mywibox3)
   end
   moduleSound.itemToggleMute=function(devId)
     util.spawn_with_shell("amixer -q set "..devId.." 1+ toggle")
-    --print("pactl set-"..dev.type.."-mute "..dev.id.." toggle")
   end
 
   function drawMenu()
@@ -104,7 +103,6 @@ local function new(mywibox3)
       local data=string.split(line,";")
       local aChannal = data[1]
       local aVolume = (tonumber(data[2]:match("%d+")) or 0) / 100
-      --print("data",data[2]:match("%d+"))
       local isMute = false
       if data[3]:match("off") then isMute=true end
       --Add device
@@ -144,7 +142,6 @@ local function new(mywibox3)
   --if widget then return widget end
   local widget = wibox.layout.fixed.horizontal()
   local valueWidget=wibox.widget.textbox()
-  --valueWidget:set_text("Vol")
 
   local btn = util.table.join(
   button({ }, 1, function(geo)
