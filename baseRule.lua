@@ -1,26 +1,22 @@
 local awful = require("awful")
 local utils = require("utils")
 local tyrannical = require("tyrannical")
-local config = require("forgotten")
+--local config = require("forgotten")
 
 local function five_layout(c,tag)
-    if type(tag) == "client" then
-        c, tag = tag, c
-    end
-
     local count = #match:clients() + 1
     if count == 2 then
         awful.layout.set(awful.layout.suit.tile,tag)
-        tag.master_count = 1
-        tag.master_width_factor  = 0.5
+        awful.tag.setproperty(tag,"nmaster",1)
+        awful.tag.setproperty(tag,"mwfact",0.5)
     elseif count > 2 and count < 5 then
         awful.layout.set(awful.layout.suit.tile,tag)
-        tag.master_count = 1
-        tag.master_width_factor = 0.6
+        awful.tag.setproperty(tag,"nmaster",1)
+        awful.tag.setproperty(tag,"mwfact",0.6)
     elseif count == 5 then
-        tag.master_count = 2
-        tag.master_width_factor = 0.63 -- 100 columns at 1080p 11px fonts
-        --awful.client.setwfact(0.66, tag.screen.selected_tag.nmaster or 1)
+        awful.tag.setproperty(tag,"nmaster",2)
+        awful.tag.setproperty(tag,"mwfact",0.63) -- 100 columns at 1080p 11px fonts
+        awful.client.setwfact(0.66, awful.client.getmaster(awful.tag.getscreen(tag)))
     end
     return 6
 end
@@ -28,27 +24,41 @@ end
 local function fair_split_or_tile(c,tag)
     if count == 2 then
         awful.layout.set(awful.layout.suit.tile,tag)
-        tag.master_count = 1
-        tag.master_width_factor = 0.5
+        awful.tag.setproperty(tag,"nmaster",1)
+        awful.tag.setproperty(tag,"mwfact",0.5)
     else
         awful.layout.set(awful.layout.suit.tile,tag)
-        tag.master_count = 1
-        tag.master_width_factor = 0.6
+        awful.tag.setproperty(tag,"nmaster",1)
+        awful.tag.setproperty(tag,"mwfact",0.6)
     end
     return 6
 end
 
 -- }}}
 
-tags = {} --TODO remove
+local layouts =
+{
+    awful.layout.suit.floating,
+    awful.layout.suit.tile,
+    awful.layout.suit.tile.left,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.top,
+    awful.layout.suit.fair,
+    awful.layout.suit.fair.horizontal,
+    awful.layout.suit.spiral,
+    awful.layout.suit.spiral.dwindle,
+    awful.layout.suit.max,
+    awful.layout.suit.max.fullscreen,
+    awful.layout.suit.magnifier
+}
+
 
 
 tyrannical.settings.block_children_focus_stealing = true
 tyrannical.settings.group_children = true
-tyrannical.settings.force_odd_as_intrusive = true
 
 tyrannical.settings.tag.layout = awful.layout.suit.tile
-tyrannical.settings.tag.master_width_factor = 0.66
+tyrannical.settings.tag.mwfact = 0.66
 
 
 tyrannical.tags = {
@@ -56,91 +66,94 @@ tyrannical.tags = {
         name = "Term",
         init        = true                                           ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("term.png")       ,
-        screen      = {config.scr.pri, config.scr.sec} ,
+        --icon        = utils.tools.invertedIconPath("term.png")       ,
+        --screen      = {config.scr.pri, config.scr.sec} ,
         layout      = awful.layout.suit.tile                         ,
         focus_new   = true                                           ,
         selected    = true,
---         nmaster     = 2,
---         mwfact      = 0.6,
         index       = 1,
---         max_clients = five_layout,
+		--exec_once   = {"x-terminal-emulator"},
         class       = {
-            "xterm" , "urxvt" , "aterm","URxvt","XTerm"
+            "xterm" , "urxvt" , "aterm","URxvt","XTerm","Gnome-terminal","Mate-terminal"
         },
     } ,
     {
         name = "Internet",
         init        = true                                           ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("net.png")        ,
-        screen      = config.scr.pri                          ,
+        index       = 2                                              ,
+		--locked=true,
+        --icon        = utils.tools.invertedIconPath("net.png")        ,
+        --screen      = {config.scr.pri, config.scr.sec}               ,
+        --exec_once   = {"'/opt/google/chrome/chrome'"},
         layout      = awful.layout.suit.max                          ,
---         clone_on    = 2,
+		--shortcut    = { {modkey} , "i" },
+        --         clone_on    = 2,
+        no_focus_stealing_in = true                                  ,
         class = {
             "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
             "Chromium"      , "nightly"        , "Nightly"   , "minefield"    , "Minefield",
-            "luakit"
+            "luakit"	    , "Google-chrome"  , "Google-chrome-stable"
         }
     } ,
     {
         name = "Files",
         init        = true                                           ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("folder.png")     ,
-        screen      = config.scr.pri                          ,
+        --icon        = utils.tools.invertedIconPath("folder.png")     ,
+        --screen      = config.scr.pri                          ,
         layout      = awful.layout.suit.tile                         ,
-        exec_once   = {"dolphin"},
+        --exec_once   = "nautilus",
         no_focus_stealing_in = true,
         max_clients = fair_split_or_tile,
         rotate_shortcut = true,
         shortcut    = { {modkey} , "e" },
-        class  = { 
-            "Thunar"        , "Konqueror"      , "Dolphin"   , "ark"          , "Nautilus",
-            "filelight"
-        }
+        class  = {
+            "Thunar"        , "Konqueror"      , "Dolphin"   , "ark"          , "Nautilus",         }
     } ,
     {
         name = "Develop",
-     init        = true                                              ,
+        init        = false                                          ,
         exclusive   = true                                           ,
---                     screen      = {config.scr.pri, config.scr.sec}     ,
-        icon        = utils.tools.invertedIconPath("bug.png")        ,
-        layout      = awful.layout.suit.max                          ,
-        class ={ 
-            "Kate"          , "KDevelop"       , "Codeblocks", "Code::Blocks" , "DDD", "kate4"             }
+        --screen      = {config.scr.pri, config.scr.sec}     ,
+        --icon        = utils.tools.invertedIconPath("bug.png")        ,
+        layout      = awful.layout.suit.max,
+        --exec_once   = "komodo",
+
+        class ={
+            "Kate"          , "KDevelop"       , "Codeblocks", "Code::Blocks" , "DDD", "kate4", "komodo edit", "pycharm","brackets","Sublime_text"             }
     } ,
     {
         name = "Edit",
-        init        = false                                          ,
+        init        = false                                           ,
         exclusive   = false                                           ,
---                     screen      = {config.scr.pri, config.scr.sec}     ,
-        icon        = utils.tools.invertedIconPath("editor.png")     ,
+        --                     screen      = {config.scr.pri, config.scr.sec}     ,
+        --icon        = utils.tools.invertedIconPath("editor.png")     ,
         layout      = awful.layout.suit.tile.bottom                  ,
-        class = { 
-            "KWrite"        , "GVim"           , "Emacs"     , "Code::Blocks" , "DDD"               }
+        class = {
+            "KWrite"        , "GVim"           , "Emacs"     , "Code::Blocks" , "DDD", "Gedit"               }
     } ,
     {
         name = "Media",
         init        = false                                          ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("media.png")      ,
+        --icon        = utils.tools.invertedIconPath("media.png")      ,
         layout      = awful.layout.suit.max                          ,
-        class = { 
+        class = {
             "Xine"          , "xine Panel"     , "xine*"     , "MPlayer"      , "GMPlayer",
-            "XMMS" }
+            "XMMS", "Rhythmbox" }
     } ,
     {
         name = "Doc",
-        init        = false                                          ,
+        init        = false                                           ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("info.png")       ,
---                     screen      = config.scr.music                          ,
+        --icon        = utils.tools.invertedIconPath("info.png")       ,
+        --                     screen      = config.scr.music                          ,
         layout      = awful.layout.suit.max                          ,
-        force_screen= true                                           ,
+        --force_screen= true                                           ,
         class       = {
             "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
-            "Xpdf"          ,                                        }
+            "Xpdf"          , "evince-previewer"                                       }
     } ,
 
 
@@ -150,25 +163,25 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("image.png")      ,
+       -- icon        = utils.tools.invertedIconPath("image.png")      ,
         layout      = awful.layout.suit.max                          ,
-        class       = {"Inkscape"      , "KolourPaint"    , "Krita"     , "Karbon"       , "Karbon14"}
+        class       = {"Inkscape"      , "KolourPaint"    , "Krita"     , "Karbon"       , "Karbon14", "Gimp"}
     } ,
     {
         name        = "Picture",
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("image.png")      ,
+       -- icon        = utils.tools.invertedIconPath("image.png")      ,
         layout      = awful.layout.suit.max                          ,
-        class       = {"Digikam"       , "F-Spot"         , "GPicView"  , "ShowPhoto"    , "KPhotoAlbum"}
+        class       = {"Digikam"       , "F-Spot"         , "GPicView"  , "ShowPhoto"    , "KPhotoAlbum", "shotwell"}
     } ,
     {
         name        = "Video",
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("video.png")      ,
+       -- icon        = utils.tools.invertedIconPath("video.png")      ,
         layout      = awful.layout.suit.max                          ,
         class       = {"KDenLive"      , "Cinelerra"      , "AVIDeMux"  , "Kino"}
     } ,
@@ -177,7 +190,7 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 12                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("video.png")      ,
+      --  icon        = utils.tools.invertedIconPath("video.png")      ,
         layout      = awful.layout.suit.max                          ,
         class       = {"VLC"}
     } ,
@@ -186,7 +199,7 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("3d.png")         ,
+      --  icon        = utils.tools.invertedIconPath("3d.png")         ,
         layout      = awful.layout.suit.max.fullscreen               ,
         class       = {"Blender"       , "Maya"           , "K-3D"      , "KPovModeler"  , }
     } ,
@@ -195,27 +208,28 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        screen      = config.scr.music or config.scr.pri             ,
-        force_screen= true                                           ,
-        icon        = utils.tools.invertedIconPath("media.png")      ,
+        --screen      = config.scr.music or config.scr.pri             ,
+        --force_screen= true                                           ,
+      --  icon        = utils.tools.invertedIconPath("media.png")      ,
         layout      = awful.layout.suit.max                          ,
-        class       = {"Amarok"        , "SongBird"       , "last.fm"   ,}
+        class       = {"Amarok"        , "SongBird"       , "last.fm"   , "rhythmbox"}
     } ,
     {
         name        = "Down",
-        init        = false                                          ,
+        init        = false                                        ,
+        exec_once   = "transmission-gtk",
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("download.png")   ,
+      --  icon        = utils.tools.invertedIconPath("download.png")   ,
         layout      = awful.layout.suit.max                          ,
-        class       = {"Transmission-qt"  , "KGet"}
+        class       = {"Transmission-qt"  , "KGet", "transmission-gtk"}
     } ,
     {
         name        = "Office",
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("office.png")     ,
+     --   icon        = utils.tools.invertedIconPath("office.png")     ,
         layout      = awful.layout.suit.max                          ,
         class       = {
             "OOWriter"      , "OOCalc"         , "OOMath"    , "OOImpress"    , "OOBase"       ,
@@ -227,7 +241,7 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("rss.png")        ,
+      --  icon        = utils.tools.invertedIconPath("rss.png")        ,
         layout      = awful.layout.suit.max                          ,
         class       = {}
     } ,
@@ -236,8 +250,8 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        screen      = config.scr.sec or config.scr.sec ,
-        icon        = utils.tools.invertedIconPath("chat.png")       ,
+        --screen      = config.scr.sec or config.scr.sec ,
+     --   icon        = utils.tools.invertedIconPath("chat.png")       ,
         layout      = awful.layout.suit.tile                         ,
         class       = {"Pidgin"        , "Kopete"         ,}
     } ,
@@ -246,7 +260,7 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        icon        = utils.tools.invertedIconPath("burn.png")       ,
+     --   icon        = utils.tools.invertedIconPath("burn.png")       ,
         layout      = awful.layout.suit.tile                         ,
         class       = {"k3b"}
     } ,
@@ -255,8 +269,8 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
---         screen      = config.scr.sec or config.scr.pri     ,
-        icon        = utils.tools.invertedIconPath("mail2.png")      ,
+        --         screen      = config.scr.sec or config.scr.pri     ,
+    --    icon        = utils.tools.invertedIconPath("mail2.png")      ,
         layout      = awful.layout.suit.max                          ,
         class       = {"Thunderbird"   , "kmail"          , "evolution" ,}
     } ,
@@ -265,10 +279,9 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = true                                           ,
-        screen      = config.scr.irc or config.scr.pri ,
-        init        = true                                           ,
+       -- screen      = config.scr.irc or config.scr.pri ,
         spawn       = "konversation"                                 ,
-        icon        = utils.tools.invertedIconPath("irc.png")        ,
+     --   icon        = utils.tools.invertedIconPath("irc.png")        ,
         force_screen= true                                           ,
         layout      = awful.layout.suit.fair                         ,
         exec_once   = {"konversation"},
@@ -279,10 +292,10 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 99                                             ,
         exclusive   = false                                          ,
-        screen      = config.scr.sec or config.scr.pri     ,
+       -- screen      = config.scr.sec or config.scr.pri     ,
         leave_kills = true                                           ,
         persist     = true                                           ,
-        icon        = utils.tools.invertedIconPath("tools.png")      ,
+     --   icon        = utils.tools.invertedIconPath("tools.png")      ,
         layout      = awful.layout.suit.max                          ,
         class       = {}
     } ,
@@ -291,27 +304,27 @@ tyrannical.tags = {
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = false                                          ,
-        icon        = utils.tools.invertedIconPath("tools.png")      ,
+      --  icon        = utils.tools.invertedIconPath("tools.png")      ,
         layout      = awful.layout.suit.max                        ,
         class       = {"Systemsettings", "Kcontrol"       , "gconf-editor"}
     } ,
     {
         name        = "Game",
         init        = false                                          ,
-        screen      = config.scr.pri                          ,
+       -- screen      = config.scr.pri                          ,
         position    = 10                                             ,
         exclusive   = false                                          ,
-        icon        = utils.tools.invertedIconPath("game.png")       ,
+      --  icon        = utils.tools.invertedIconPath("game.png")       ,
         force_screen= true                                           ,
         layout      = awful.layout.suit.max                        ,
-        class       = {"sauer_client"  , "Cube 2$"        , "Cube 2: Sauerbraten"        ,}
+        class       = {"sauer_client"  , "Cube 2$"        , "Cube 2: Sauerbraten"        , "steam", }
     } ,
     {
         name        = "Gimp",
         init        = false                                          ,
         position    = 10                                             ,
         exclusive   = false                                          ,
-        icon        = utils.tools.invertedIconPath("image.png")      ,
+      --  icon        = utils.tools.invertedIconPath("image.png")      ,
         layout      = awful.layout.tile                              ,
         nmaster     = 1                                              ,
         incncol     = 10                                             ,
@@ -325,7 +338,7 @@ tyrannical.tags = {
         position    = 15                                             ,
         exclusive   = false                                          ,
         selected    = true                                           ,
-        icon        = utils.tools.invertedIconPath("term.png")       ,
+     --   icon        = utils.tools.invertedIconPath("term.png")       ,
         max_clients = 5                                              ,
         screen      = {3, 4, 5}                                      ,
         layout      = awful.layout.suit.tile                         ,
@@ -333,15 +346,25 @@ tyrannical.tags = {
     } ,
     {
         name        = "MediaCenter",
-        init        = true                                           ,
+        init        = false                                           ,
         position    = 15                                             ,
         exclusive   = false                                          ,
-        icon        = utils.tools.invertedIconPath("video.png")      ,
+     --   icon        = utils.tools.invertedIconPath("video.png")      ,
         max_clients = 5                                              ,
-        screen      = config.scr.media or config.scr.pri   ,
-        init        = "mythfrontend"                                 ,
+       -- screen      = config.scr.media or config.scr.pri   ,
         layout      = awful.layout.suit.tile                         ,
         class       = {"mythfrontend"  , "xbmc" , "xbmc.bin"        ,}
+    } ,
+     {
+        name        = "Books",
+        init        = false                                           ,
+        position    = 15                                             ,
+        exclusive   = false                                          ,
+     --   icon        = utils.tools.invertedIconPath("info.png")      ,
+       -- screen      = config.scr.pri   ,
+        layout      = awful.layout.suit.tile                         ,
+        --- libprs500 is calibre (need to fix their naming)
+        class       = {"libprs500"        ,}
     } ,
 }
 
@@ -349,7 +372,7 @@ tyrannical.properties.intrusive = {
     "ksnapshot"     , "pinentry"       , "gtksu"     , "kcalc"        , "xcalc"           ,
     "feh"           , "Gradient editor", "About KDE" , "Paste Special", "Background color",
     "kcolorchooser" , "plasmoidviewer" , "plasmaengineexplorer" , "Xephyr" , "kruler"     ,
-    "yakuake"       , "wxmaxima",
+    "yakuake"       ,
     "sflphone-client-kde", "sflphone-client-gnome", "xev",
 }
 tyrannical.properties.floating = {
@@ -357,7 +380,7 @@ tyrannical.properties.floating = {
     "xine"         , "feh"             , "kmix"       , "kcalc"        , "xcalc"          ,
     "yakuake"      , "Select Color$"   , "kruler"     , "kcolorchooser", "Paste Special"  ,
     "New Form"     , "Insert Picture"  , "kcharselect", "mythfrontend" , "plasmoidviewer" ,
-    "sflphone-client-kde", "sflphone-client-gnome", "xev", "wxmaxima",
+    "sflphone-client-kde", "sflphone-client-gnome", "xev",
     amarok = false , "yakuake", "Conky"
 }
 
@@ -398,11 +421,11 @@ tyrannical.properties.intrusive_popup = {
     "transmission-qt"
 }
 
-tyrannical.properties.placement = { kcalc=awful.placement.centered }
+tyrannical.properties.centered = { "kcalc" }
 
 tyrannical.properties.skip_taskbar = {"yakuake"}
 tyrannical.properties.hidden = {"yakuake"}
 
 -- tyrannical.properties.no_autofocus = {"umbrello"}
 
-tyrannical.properties.size_hints_honor = { URxvt = false, aterm = false, sauer_client = false, mythfrontend  = false, kodi = false}
+tyrannical.properties.size_hints_honor = { xterm = false, URxvt = false, aterm = false, sauer_client = false, mythfrontend  = false, kodi = false}
