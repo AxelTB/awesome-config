@@ -119,7 +119,7 @@ beautiful.init(config.themePath                .. "/themeSciFi.lua")
 
 -- This is used later as the default terminal and editor to run.
 local titlebars_enabled = beautiful.titlebar_enabled == nil and true or beautiful.titlebar_enabled
-terminal                = "urxvtc --background-expr 'align 1, 0, pad keep { load \""..os.getenv ( "HOME" ).."/config_files/term_logo.png\"}'"
+terminal                = "mate-terminal"--"urxvtc --background-expr 'align 1, 0, pad keep { load \""..os.getenv ( "HOME" ).."/config_files/term_logo.png\"}'"
 editor                  = os.getenv("EDITOR") or "nano"
 editor_cmd              = terminal .. " -e " .. editor
 
@@ -455,25 +455,25 @@ awful.screen.connect_for_each_screen(function(s)
     local h =beautiful.wibar_height or beautiful.default_height
 
     local screen_left_icon = gears.surface.load_from_shape(
-        h, h, 
+        h, h,
         gears.shape.transform(gears.shape.arrow) : rotate_at(h/2,h/2, math.pi*1.5),
         beautiful.fg_normal, "#00000000"
     )
 
     local screen_right_icon = gears.surface.load_from_shape(
-        h, h, 
+        h, h,
         gears.shape.transform(gears.shape.arrow) : rotate_at(h/2,h/2, math.pi*0.5),
         beautiful.fg_normal, "#00000000"
     )
 
     local screen_minus_icon = gears.surface.load_from_shape(
-        h, h, 
+        h, h,
         parallelogram_shape,
         beautiful.fg_normal, "#00000000"
     )
 
     local screen_cross_icon = gears.surface.load_from_shape(
-        h, h, 
+        h, h,
         gears.shape.cross,
         beautiful.fg_normal, "#00000000"
     )
@@ -678,7 +678,7 @@ end
 --     end
 --     return w
 -- end)
--- 
+--
 -- require("radical.impl.tasklist.extensions").add("Machine",function(client)
 --     local w = wibox.widget.base.make_widget()
 --     w.fit = function(_,context, w, h)
@@ -708,4 +708,3 @@ shorter.register_section("TYRANNICAL",{
 })
 
 shorter.register_section_text("REPETITIVE","gdfgdfgdfg dsfhg jsdghjsdf gdsfhj gdhj gjgj gjdf ghdjfh gjgdjgdjhg d dhjfg dhfjg dhfj gdhfgj sdhj fg")
-
