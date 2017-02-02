@@ -12,6 +12,8 @@ local function load_folder(parent,path,args,item_args)
         if ftype == "2" then
           m = radical.context( util.table.join({},args) )
           parent:add_item(util.table.join({text=name,sub_menu= m and (function() load_folder(m,path.."/"..name,args,item_args);return m end) or nil},item_args))
+        else
+          parent:add_item(util.table.join({text=name,item_args}))
         end
 
       end
