@@ -5,13 +5,15 @@ local util     = require("awful.util")
 local module = {}
 
 local function load_folder(parent,path,args,item_args)
-  fd_async.directory.scan(path,{attributes={"FILE_ATTRIBUTE_STANDARD_NAME","FILE_ATTRIBUTE_STANDARD_TYPE"}}):connect_signal("request::completed",function(list)
+  fd_async.directory.scan(path,{attributes={"FILE_ATTRIBUTE_STANDARD_NAME","FILE_ATTRIBUTE_STANDARD_TYPE","FILE_ATTRIBUTE_STANDARD_IS_HIDDEN"}}):connect_signal("request::completed",function(list)
     for k,v in ipairs(list) do
       local ftype,name,m = v["FILE_ATTRIBUTE_STANDARD_TYPE"],v["FILE_ATTRIBUTE_STANDARD_NAME"],nil
-      if ftype == "2" then
-        m = radical.context( util.table.join({},args) )
+      if v["FILE_ATTRIBUTE_STANDARD_IS_HIDDEN"] ~= "TRUE" then
+        if ftype == "2" then
+          m = radical.context( util.table.join({},args) )
+        end
+        parent:add_item(util.table.join({text=name,sub_menu= m and (function() load_folder(m,path.."/"..name,args,item_args);return m end) or nil},item_args))
       end
-      parent:add_item(util.table.join({text=name,sub_menu= m and (function() load_folder(m,path.."/"..name,args,item_args);return m end) or nil},item_args))
     end
   end)
 end
