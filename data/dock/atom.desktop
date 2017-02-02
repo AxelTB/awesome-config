@@ -1,0 +1,11 @@
+Categories=Development;
+Type=Application
+Comment=A hackable text editor for the 21st Century.
+Icon_orig=atom
+Class=atom
+StartupNotify=true
+GenericName=Text Editor
+MimeType=text/plain;
+Exec=/usr/share/atom/atom
+Icon=atom
+Name=Atom
