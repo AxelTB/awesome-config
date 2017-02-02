@@ -1,0 +1,17 @@
+Categories=Graphics;
+Comment=Create images and edit photographs
+Class=gnu image manipulation program
+TryExec=gimp-2.8
+Component=General
+GenericName=Image Editor
+Icon=gimp
+Bugzilla=GNOME
+Type=Application
+OtherBinaries=gimp-2.8
+Product=GIMP
+Name=GNU Image Manipulation Program
+MimeType=image/bmp;image/g3fax;image/gif;image/x-fits;image/x-pcx;image/x-portable-anymap;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap;image/x-psd;image/x-sgi;image/x-tga;image/x-xbitmap;image/x-xwindowdump;image/x-xcf;image/x-compressed-xcf;image/x-gimp-gbr;image/x-gimp-pat;image/x-gimp-gih;image/tiff;image/jpeg;image/x-psp;application/postscript;image/png;image/x-icon;image/x-xpixmap;image/svg+xml;application/pdf;image/x-wmf;image/x-xcursor;
+StartupNotify=true
+Exec=gimp-2.8 %U
+Version=2.8.18
+Terminal=false

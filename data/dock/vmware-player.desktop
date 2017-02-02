@@ -1,0 +1,12 @@
+Categories=System;
+Type=Application
+Comment=Run a virtual machine
+Icon_orig=vmware-player
+Class=vmware player
+StartupNotify=true
+Name=VMware Player
+MimeType=application/x-vmware-vm;application/x-vmware-enc-vm;x-scheme-handler/vmrc;
+Encoding=UTF-8
+Exec=/usr/bin/vmplayer %u
+Icon=vmware-player
+Terminal=false

@@ -1,0 +1,16 @@
+Categories=Tools;
+Comment=Use the command line
+Class=mate terminal
+TryExec=mate-terminal
+Component=BugBuddyBugs
+GenericName=Terminal
+Icon=utilities-terminal
+Bugzilla=MATE
+Type=Application
+DocPath=mate-terminal/index.html
+Keywords=MATE;terminal;shell;prompt;command;commandline;
+Product=mate-terminal
+Version=1.16.1
+Exec=mate-terminal
+Name=MATE Terminal
+StartupNotify=true

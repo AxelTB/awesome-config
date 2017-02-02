@@ -1,0 +1,11 @@
+Categories=System;
+Type=Application
+Comment=Run several virtual systems on a single host computer
+Icon_orig=virtualbox
+Class=virtualbox
+TryExec=VirtualBox
+GenericName=PC virtualization solution
+Name=VirtualBox
+Exec=VirtualBox %U
+Icon=virtualbox
+MimeType=application/x-virtualbox-vbox;application/x-virtualbox-vbox-extpack;application/x-virtualbox-ovf;application/x-virtualbox-ova;
