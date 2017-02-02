@@ -15,8 +15,7 @@ local function load_folder(parent,path,args,item_args)
       if v["FILE_ATTRIBUTE_STANDARD_IS_HIDDEN"] ~= "TRUE" then
         if ftype == "2" then
           m = radical.context( util.table.join({},args) )
-          m.localPath=(parent.localPath or "")..path
-          parent:add_item(util.table.join({text=name,sub_menu= m and (function() load_folder(m,path.."/"..name,args,item_args);return m end) or nil, button1=function() spawn_location(m.localPath.."/"..name) end},item_args))
+          parent:add_item(util.table.join({text=name,sub_menu= m and (function() load_folder(m,path.."/"..name,args,item_args);return m end) or nil, button1=function() spawn_location(path.."/"..name) end},item_args))
         else
           parent:add_item(util.table.join({text=name,button1=function() spawn_location(path.."/"..name) end, item_args}))
         end
